@@ -80,7 +80,7 @@ HTMLファイルをブラウザで開いてください。
 研究・出版物・発表等でLURE Frameworkを参照・引用する場合は、以下の形式をご使用ください。
 
 ```
-Hario, D. (2025). LURE Framework: Lifecycle of User-targeted Risk and Exploitation (ver.01).
+Hario, D. (2026). LURE Framework: Lifecycle of User-targeted Risk and Exploitation (ver.01).
 https://doi.org/10.5281/zenodo.19478053
 ```
 
