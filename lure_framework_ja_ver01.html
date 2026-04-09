@@ -1,0 +1,2271 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LURE Framework</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8f7f4;color:#1a1a18;padding:16px 14px 200px}
+h1{font-size:17px;font-weight:500;margin-bottom:2px}
+.sub{font-size:11px;color:#888780;margin-bottom:10px}
+
+/* ── Hidden radio inputs ── */
+input[type=radio]{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
+
+/* ── Harm buttons ── */
+.harm-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.harm-btn{font-size:11px;padding:6px 12px;border-radius:20px;border:0.5px solid #c8c6be;background:#fff;color:#5f5e5a;cursor:pointer;display:inline-block;-webkit-tap-highlight-color:transparent;user-select:none;transition:background .1s,color .1s}
+#harm-h1:checked ~ .page .harm-btn.hb-H1{background:#185FA5;color:#fff;border-color:transparent}
+#harm-h2:checked ~ .page .harm-btn.hb-H2{background:#0F6E56;color:#fff;border-color:transparent}
+#harm-h3:checked ~ .page .harm-btn.hb-H3{background:#993556;color:#fff;border-color:transparent}
+#harm-h4:checked ~ .page .harm-btn.hb-H4{background:#534AB7;color:#fff;border-color:transparent}
+#harm-h5:checked ~ .page .harm-btn.hb-H5{background:#993C1D;color:#fff;border-color:transparent}
+#harm-h6:checked ~ .page .harm-btn.hb-H6{background:#854F0B;color:#fff;border-color:transparent}
+#harm-h7:checked ~ .page .harm-btn.hb-H7{background:#A32D2D;color:#fff;border-color:transparent}
+
+/* ── Legend ── */
+.legend{font-size:11px;color:#888780;margin-bottom:10px}
+#harm-h1:checked ~ .page .legend-default{display:none}
+#harm-h1:checked ~ .page .legend-h1{display:block}
+#harm-h2:checked ~ .page .legend-default{display:none}
+#harm-h2:checked ~ .page .legend-h2{display:block}
+#harm-h3:checked ~ .page .legend-default{display:none}
+#harm-h3:checked ~ .page .legend-h3{display:block}
+#harm-h4:checked ~ .page .legend-default{display:none}
+#harm-h4:checked ~ .page .legend-h4{display:block}
+#harm-h5:checked ~ .page .legend-default{display:none}
+#harm-h5:checked ~ .page .legend-h5{display:block}
+#harm-h6:checked ~ .page .legend-default{display:none}
+#harm-h6:checked ~ .page .legend-h6{display:block}
+#harm-h7:checked ~ .page .legend-default{display:none}
+#harm-h7:checked ~ .page .legend-h7{display:block}
+
+.legend-h1,.legend-h2,.legend-h3,.legend-h4,.legend-h5,.legend-h6,.legend-h7{display:none}
+
+/* ── Matrix ── */
+.matrix-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:12px}
+.matrix{display:flex;gap:5px;min-width:max-content}
+.stage-col{width:130px;flex-shrink:0}
+.stage-head{background:#fff;border:0.5px solid #d3d1c7;border-radius:6px 6px 0 0;padding:7px 8px;margin-bottom:3px}
+.snum{font-size:9px;font-weight:500;color:#888780}
+.sen{font-size:11px;font-weight:500;color:#1a1a18;line-height:1.3}
+.sja{font-size:9px;color:#5f5e5a}
+.modes-list{display:flex;flex-direction:column;gap:3px}
+
+/* ── Mode cards ── */
+.mode-card{display:block;padding:6px 7px;border-radius:4px;border:0.5px solid #d3d1c7;background:#f1efe8;cursor:pointer;opacity:0.45;transition:opacity .15s,background .15s,color .15s;-webkit-tap-highlight-color:transparent;user-select:none}
+.mname{font-size:10px;font-weight:500;line-height:1.35;color:#1a1a18}
+.htags{font-size:9px;margin-top:2px;opacity:0.75;color:#1a1a18}
+
+/* Default (no harm selected): all cards visible */
+#harm-none:checked ~ .page .mode-card{opacity:1;background:#f1efe8}
+#harm-none:checked ~ .page .mname,#harm-none:checked ~ .page .htags{color:#1a1a18}
+#harm-h1:checked ~ .page .mode-card{opacity:0.15;background:#f1efe8}
+#harm-h1:checked ~ .page .mname,#harm-h1:checked ~ .page .htags{color:#1a1a18}
+#harm-h1:checked ~ .page label[for=mode-0]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-0] .mname,#harm-h1:checked ~ .page label[for=mode-0] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-1]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-1] .mname,#harm-h1:checked ~ .page label[for=mode-1] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-9]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-9] .mname,#harm-h1:checked ~ .page label[for=mode-9] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-10]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-10] .mname,#harm-h1:checked ~ .page label[for=mode-10] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-11]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-11] .mname,#harm-h1:checked ~ .page label[for=mode-11] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-12]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-12] .mname,#harm-h1:checked ~ .page label[for=mode-12] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-17]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-17] .mname,#harm-h1:checked ~ .page label[for=mode-17] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-18]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-18] .mname,#harm-h1:checked ~ .page label[for=mode-18] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-19]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-19] .mname,#harm-h1:checked ~ .page label[for=mode-19] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-20]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-20] .mname,#harm-h1:checked ~ .page label[for=mode-20] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-21]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-21] .mname,#harm-h1:checked ~ .page label[for=mode-21] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-22]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-22] .mname,#harm-h1:checked ~ .page label[for=mode-22] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-33]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-33] .mname,#harm-h1:checked ~ .page label[for=mode-33] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-34]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-34] .mname,#harm-h1:checked ~ .page label[for=mode-34] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-35]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-35] .mname,#harm-h1:checked ~ .page label[for=mode-35] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-36]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-36] .mname,#harm-h1:checked ~ .page label[for=mode-36] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-37]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-37] .mname,#harm-h1:checked ~ .page label[for=mode-37] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-38]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-38] .mname,#harm-h1:checked ~ .page label[for=mode-38] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-52]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-52] .mname,#harm-h1:checked ~ .page label[for=mode-52] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-53]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-53] .mname,#harm-h1:checked ~ .page label[for=mode-53] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-54]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-54] .mname,#harm-h1:checked ~ .page label[for=mode-54] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-55]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-55] .mname,#harm-h1:checked ~ .page label[for=mode-55] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-56]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-56] .mname,#harm-h1:checked ~ .page label[for=mode-56] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-57]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-57] .mname,#harm-h1:checked ~ .page label[for=mode-57] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-58]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-58] .mname,#harm-h1:checked ~ .page label[for=mode-58] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-79]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-79] .mname,#harm-h1:checked ~ .page label[for=mode-79] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-80]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-80] .mname,#harm-h1:checked ~ .page label[for=mode-80] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-81]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-81] .mname,#harm-h1:checked ~ .page label[for=mode-81] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-82]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-82] .mname,#harm-h1:checked ~ .page label[for=mode-82] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-101]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-101] .mname,#harm-h1:checked ~ .page label[for=mode-101] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-102]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-102] .mname,#harm-h1:checked ~ .page label[for=mode-102] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-103]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-103] .mname,#harm-h1:checked ~ .page label[for=mode-103] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-104]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-104] .mname,#harm-h1:checked ~ .page label[for=mode-104] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-132]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-132] .mname,#harm-h1:checked ~ .page label[for=mode-132] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-133]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-133] .mname,#harm-h1:checked ~ .page label[for=mode-133] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-134]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-134] .mname,#harm-h1:checked ~ .page label[for=mode-134] .htags{color:#fff!important}
+#harm-h1:checked ~ .page label[for=mode-135]{opacity:1!important;background:#185FA5!important}
+#harm-h1:checked ~ .page label[for=mode-135] .mname,#harm-h1:checked ~ .page label[for=mode-135] .htags{color:#fff!important}
+#harm-h2:checked ~ .page .mode-card{opacity:0.15;background:#f1efe8}
+#harm-h2:checked ~ .page .mname,#harm-h2:checked ~ .page .htags{color:#1a1a18}
+#harm-h2:checked ~ .page label[for=mode-0]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-0] .mname,#harm-h2:checked ~ .page label[for=mode-0] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-2]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-2] .mname,#harm-h2:checked ~ .page label[for=mode-2] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-9]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-9] .mname,#harm-h2:checked ~ .page label[for=mode-9] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-10]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-10] .mname,#harm-h2:checked ~ .page label[for=mode-10] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-13]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-13] .mname,#harm-h2:checked ~ .page label[for=mode-13] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-17]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-17] .mname,#harm-h2:checked ~ .page label[for=mode-17] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-21]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-21] .mname,#harm-h2:checked ~ .page label[for=mode-21] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-22]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-22] .mname,#harm-h2:checked ~ .page label[for=mode-22] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-23]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-23] .mname,#harm-h2:checked ~ .page label[for=mode-23] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-58]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-58] .mname,#harm-h2:checked ~ .page label[for=mode-58] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-59]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-59] .mname,#harm-h2:checked ~ .page label[for=mode-59] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-60]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-60] .mname,#harm-h2:checked ~ .page label[for=mode-60] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-61]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-61] .mname,#harm-h2:checked ~ .page label[for=mode-61] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-83]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-83] .mname,#harm-h2:checked ~ .page label[for=mode-83] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-84]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-84] .mname,#harm-h2:checked ~ .page label[for=mode-84] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-85]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-85] .mname,#harm-h2:checked ~ .page label[for=mode-85] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-86]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-86] .mname,#harm-h2:checked ~ .page label[for=mode-86] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-105]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-105] .mname,#harm-h2:checked ~ .page label[for=mode-105] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-106]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-106] .mname,#harm-h2:checked ~ .page label[for=mode-106] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-107]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-107] .mname,#harm-h2:checked ~ .page label[for=mode-107] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-108]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-108] .mname,#harm-h2:checked ~ .page label[for=mode-108] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-132]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-132] .mname,#harm-h2:checked ~ .page label[for=mode-132] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-135]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-135] .mname,#harm-h2:checked ~ .page label[for=mode-135] .htags{color:#fff!important}
+#harm-h2:checked ~ .page label[for=mode-136]{opacity:1!important;background:#0F6E56!important}
+#harm-h2:checked ~ .page label[for=mode-136] .mname,#harm-h2:checked ~ .page label[for=mode-136] .htags{color:#fff!important}
+#harm-h3:checked ~ .page .mode-card{opacity:0.15;background:#f1efe8}
+#harm-h3:checked ~ .page .mname,#harm-h3:checked ~ .page .htags{color:#1a1a18}
+#harm-h3:checked ~ .page label[for=mode-0]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-0] .mname,#harm-h3:checked ~ .page label[for=mode-0] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-3]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-3] .mname,#harm-h3:checked ~ .page label[for=mode-3] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-4]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-4] .mname,#harm-h3:checked ~ .page label[for=mode-4] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-9]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-9] .mname,#harm-h3:checked ~ .page label[for=mode-9] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-14]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-14] .mname,#harm-h3:checked ~ .page label[for=mode-14] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-15]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-15] .mname,#harm-h3:checked ~ .page label[for=mode-15] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-19]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-19] .mname,#harm-h3:checked ~ .page label[for=mode-19] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-22]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-22] .mname,#harm-h3:checked ~ .page label[for=mode-22] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-24]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-24] .mname,#harm-h3:checked ~ .page label[for=mode-24] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-25]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-25] .mname,#harm-h3:checked ~ .page label[for=mode-25] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-26]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-26] .mname,#harm-h3:checked ~ .page label[for=mode-26] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-36]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-36] .mname,#harm-h3:checked ~ .page label[for=mode-36] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-37]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-37] .mname,#harm-h3:checked ~ .page label[for=mode-37] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-38]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-38] .mname,#harm-h3:checked ~ .page label[for=mode-38] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-40]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-40] .mname,#harm-h3:checked ~ .page label[for=mode-40] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-41]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-41] .mname,#harm-h3:checked ~ .page label[for=mode-41] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-62]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-62] .mname,#harm-h3:checked ~ .page label[for=mode-62] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-63]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-63] .mname,#harm-h3:checked ~ .page label[for=mode-63] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-64]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-64] .mname,#harm-h3:checked ~ .page label[for=mode-64] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-65]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-65] .mname,#harm-h3:checked ~ .page label[for=mode-65] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-83]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-83] .mname,#harm-h3:checked ~ .page label[for=mode-83] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-87]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-87] .mname,#harm-h3:checked ~ .page label[for=mode-87] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-88]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-88] .mname,#harm-h3:checked ~ .page label[for=mode-88] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-89]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-89] .mname,#harm-h3:checked ~ .page label[for=mode-89] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-109]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-109] .mname,#harm-h3:checked ~ .page label[for=mode-109] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-110]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-110] .mname,#harm-h3:checked ~ .page label[for=mode-110] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-111]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-111] .mname,#harm-h3:checked ~ .page label[for=mode-111] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-112]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-112] .mname,#harm-h3:checked ~ .page label[for=mode-112] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-132]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-132] .mname,#harm-h3:checked ~ .page label[for=mode-132] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-135]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-135] .mname,#harm-h3:checked ~ .page label[for=mode-135] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-137]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-137] .mname,#harm-h3:checked ~ .page label[for=mode-137] .htags{color:#fff!important}
+#harm-h3:checked ~ .page label[for=mode-138]{opacity:1!important;background:#993556!important}
+#harm-h3:checked ~ .page label[for=mode-138] .mname,#harm-h3:checked ~ .page label[for=mode-138] .htags{color:#fff!important}
+#harm-h4:checked ~ .page .mode-card{opacity:0.15;background:#f1efe8}
+#harm-h4:checked ~ .page .mname,#harm-h4:checked ~ .page .htags{color:#1a1a18}
+#harm-h4:checked ~ .page label[for=mode-0]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-0] .mname,#harm-h4:checked ~ .page label[for=mode-0] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-5]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-5] .mname,#harm-h4:checked ~ .page label[for=mode-5] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-9]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-9] .mname,#harm-h4:checked ~ .page label[for=mode-9] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-14]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-14] .mname,#harm-h4:checked ~ .page label[for=mode-14] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-15]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-15] .mname,#harm-h4:checked ~ .page label[for=mode-15] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-19]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-19] .mname,#harm-h4:checked ~ .page label[for=mode-19] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-22]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-22] .mname,#harm-h4:checked ~ .page label[for=mode-22] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-26]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-26] .mname,#harm-h4:checked ~ .page label[for=mode-26] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-27]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-27] .mname,#harm-h4:checked ~ .page label[for=mode-27] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-28]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-28] .mname,#harm-h4:checked ~ .page label[for=mode-28] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-36]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-36] .mname,#harm-h4:checked ~ .page label[for=mode-36] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-41]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-41] .mname,#harm-h4:checked ~ .page label[for=mode-41] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-42]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-42] .mname,#harm-h4:checked ~ .page label[for=mode-42] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-43]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-43] .mname,#harm-h4:checked ~ .page label[for=mode-43] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-44]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-44] .mname,#harm-h4:checked ~ .page label[for=mode-44] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-66]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-66] .mname,#harm-h4:checked ~ .page label[for=mode-66] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-67]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-67] .mname,#harm-h4:checked ~ .page label[for=mode-67] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-68]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-68] .mname,#harm-h4:checked ~ .page label[for=mode-68] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-69]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-69] .mname,#harm-h4:checked ~ .page label[for=mode-69] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-90]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-90] .mname,#harm-h4:checked ~ .page label[for=mode-90] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-91]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-91] .mname,#harm-h4:checked ~ .page label[for=mode-91] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-92]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-92] .mname,#harm-h4:checked ~ .page label[for=mode-92] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-113]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-113] .mname,#harm-h4:checked ~ .page label[for=mode-113] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-114]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-114] .mname,#harm-h4:checked ~ .page label[for=mode-114] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-115]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-115] .mname,#harm-h4:checked ~ .page label[for=mode-115] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-116]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-116] .mname,#harm-h4:checked ~ .page label[for=mode-116] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-132]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-132] .mname,#harm-h4:checked ~ .page label[for=mode-132] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-135]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-135] .mname,#harm-h4:checked ~ .page label[for=mode-135] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-138]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-138] .mname,#harm-h4:checked ~ .page label[for=mode-138] .htags{color:#fff!important}
+#harm-h4:checked ~ .page label[for=mode-139]{opacity:1!important;background:#534AB7!important}
+#harm-h4:checked ~ .page label[for=mode-139] .mname,#harm-h4:checked ~ .page label[for=mode-139] .htags{color:#fff!important}
+#harm-h5:checked ~ .page .mode-card{opacity:0.15;background:#f1efe8}
+#harm-h5:checked ~ .page .mname,#harm-h5:checked ~ .page .htags{color:#1a1a18}
+#harm-h5:checked ~ .page label[for=mode-0]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-0] .mname,#harm-h5:checked ~ .page label[for=mode-0] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-3]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-3] .mname,#harm-h5:checked ~ .page label[for=mode-3] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-9]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-9] .mname,#harm-h5:checked ~ .page label[for=mode-9] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-15]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-15] .mname,#harm-h5:checked ~ .page label[for=mode-15] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-16]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-16] .mname,#harm-h5:checked ~ .page label[for=mode-16] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-22]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-22] .mname,#harm-h5:checked ~ .page label[for=mode-22] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-26]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-26] .mname,#harm-h5:checked ~ .page label[for=mode-26] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-29]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-29] .mname,#harm-h5:checked ~ .page label[for=mode-29] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-45]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-45] .mname,#harm-h5:checked ~ .page label[for=mode-45] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-46]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-46] .mname,#harm-h5:checked ~ .page label[for=mode-46] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-83]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-83] .mname,#harm-h5:checked ~ .page label[for=mode-83] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-93]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-93] .mname,#harm-h5:checked ~ .page label[for=mode-93] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-94]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-94] .mname,#harm-h5:checked ~ .page label[for=mode-94] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-117]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-117] .mname,#harm-h5:checked ~ .page label[for=mode-117] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-118]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-118] .mname,#harm-h5:checked ~ .page label[for=mode-118] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-119]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-119] .mname,#harm-h5:checked ~ .page label[for=mode-119] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-120]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-120] .mname,#harm-h5:checked ~ .page label[for=mode-120] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-121]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-121] .mname,#harm-h5:checked ~ .page label[for=mode-121] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-135]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-135] .mname,#harm-h5:checked ~ .page label[for=mode-135] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-137]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-137] .mname,#harm-h5:checked ~ .page label[for=mode-137] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-139]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-139] .mname,#harm-h5:checked ~ .page label[for=mode-139] .htags{color:#fff!important}
+#harm-h5:checked ~ .page label[for=mode-140]{opacity:1!important;background:#993C1D!important}
+#harm-h5:checked ~ .page label[for=mode-140] .mname,#harm-h5:checked ~ .page label[for=mode-140] .htags{color:#fff!important}
+#harm-h6:checked ~ .page .mode-card{opacity:0.15;background:#f1efe8}
+#harm-h6:checked ~ .page .mname,#harm-h6:checked ~ .page .htags{color:#1a1a18}
+#harm-h6:checked ~ .page label[for=mode-0]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-0] .mname,#harm-h6:checked ~ .page label[for=mode-0] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-6]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-6] .mname,#harm-h6:checked ~ .page label[for=mode-6] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-7]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-7] .mname,#harm-h6:checked ~ .page label[for=mode-7] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-9]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-9] .mname,#harm-h6:checked ~ .page label[for=mode-9] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-14]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-14] .mname,#harm-h6:checked ~ .page label[for=mode-14] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-15]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-15] .mname,#harm-h6:checked ~ .page label[for=mode-15] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-22]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-22] .mname,#harm-h6:checked ~ .page label[for=mode-22] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-30]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-30] .mname,#harm-h6:checked ~ .page label[for=mode-30] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-31]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-31] .mname,#harm-h6:checked ~ .page label[for=mode-31] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-32]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-32] .mname,#harm-h6:checked ~ .page label[for=mode-32] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-47]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-47] .mname,#harm-h6:checked ~ .page label[for=mode-47] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-48]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-48] .mname,#harm-h6:checked ~ .page label[for=mode-48] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-49]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-49] .mname,#harm-h6:checked ~ .page label[for=mode-49] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-50]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-50] .mname,#harm-h6:checked ~ .page label[for=mode-50] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-71]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-71] .mname,#harm-h6:checked ~ .page label[for=mode-71] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-72]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-72] .mname,#harm-h6:checked ~ .page label[for=mode-72] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-73]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-73] .mname,#harm-h6:checked ~ .page label[for=mode-73] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-74]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-74] .mname,#harm-h6:checked ~ .page label[for=mode-74] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-75]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-75] .mname,#harm-h6:checked ~ .page label[for=mode-75] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-95]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-95] .mname,#harm-h6:checked ~ .page label[for=mode-95] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-96]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-96] .mname,#harm-h6:checked ~ .page label[for=mode-96] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-97]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-97] .mname,#harm-h6:checked ~ .page label[for=mode-97] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-122]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-122] .mname,#harm-h6:checked ~ .page label[for=mode-122] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-123]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-123] .mname,#harm-h6:checked ~ .page label[for=mode-123] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-124]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-124] .mname,#harm-h6:checked ~ .page label[for=mode-124] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-125]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-125] .mname,#harm-h6:checked ~ .page label[for=mode-125] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-135]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-135] .mname,#harm-h6:checked ~ .page label[for=mode-135] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-141]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-141] .mname,#harm-h6:checked ~ .page label[for=mode-141] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-142]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-142] .mname,#harm-h6:checked ~ .page label[for=mode-142] .htags{color:#fff!important}
+#harm-h6:checked ~ .page label[for=mode-143]{opacity:1!important;background:#854F0B!important}
+#harm-h6:checked ~ .page label[for=mode-143] .mname,#harm-h6:checked ~ .page label[for=mode-143] .htags{color:#fff!important}
+#harm-h7:checked ~ .page .mode-card{opacity:0.15;background:#f1efe8}
+#harm-h7:checked ~ .page .mname,#harm-h7:checked ~ .page .htags{color:#1a1a18}
+#harm-h7:checked ~ .page label[for=mode-0]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-0] .mname,#harm-h7:checked ~ .page label[for=mode-0] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-8]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-8] .mname,#harm-h7:checked ~ .page label[for=mode-8] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-9]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-9] .mname,#harm-h7:checked ~ .page label[for=mode-9] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-14]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-14] .mname,#harm-h7:checked ~ .page label[for=mode-14] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-15]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-15] .mname,#harm-h7:checked ~ .page label[for=mode-15] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-19]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-19] .mname,#harm-h7:checked ~ .page label[for=mode-19] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-22]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-22] .mname,#harm-h7:checked ~ .page label[for=mode-22] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-25]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-25] .mname,#harm-h7:checked ~ .page label[for=mode-25] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-26]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-26] .mname,#harm-h7:checked ~ .page label[for=mode-26] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-36]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-36] .mname,#harm-h7:checked ~ .page label[for=mode-36] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-41]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-41] .mname,#harm-h7:checked ~ .page label[for=mode-41] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-42]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-42] .mname,#harm-h7:checked ~ .page label[for=mode-42] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-51]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-51] .mname,#harm-h7:checked ~ .page label[for=mode-51] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-65]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-65] .mname,#harm-h7:checked ~ .page label[for=mode-65] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-76]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-76] .mname,#harm-h7:checked ~ .page label[for=mode-76] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-77]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-77] .mname,#harm-h7:checked ~ .page label[for=mode-77] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-78]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-78] .mname,#harm-h7:checked ~ .page label[for=mode-78] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-90]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-90] .mname,#harm-h7:checked ~ .page label[for=mode-90] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-98]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-98] .mname,#harm-h7:checked ~ .page label[for=mode-98] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-99]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-99] .mname,#harm-h7:checked ~ .page label[for=mode-99] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-100]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-100] .mname,#harm-h7:checked ~ .page label[for=mode-100] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-126]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-126] .mname,#harm-h7:checked ~ .page label[for=mode-126] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-127]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-127] .mname,#harm-h7:checked ~ .page label[for=mode-127] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-128]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-128] .mname,#harm-h7:checked ~ .page label[for=mode-128] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-129]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-129] .mname,#harm-h7:checked ~ .page label[for=mode-129] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-130]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-130] .mname,#harm-h7:checked ~ .page label[for=mode-130] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-131]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-131] .mname,#harm-h7:checked ~ .page label[for=mode-131] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-138]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-138] .mname,#harm-h7:checked ~ .page label[for=mode-138] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-142]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-142] .mname,#harm-h7:checked ~ .page label[for=mode-142] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-144]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-144] .mname,#harm-h7:checked ~ .page label[for=mode-144] .htags{color:#fff!important}
+#harm-h7:checked ~ .page label[for=mode-145]{opacity:1!important;background:#A32D2D!important}
+#harm-h7:checked ~ .page label[for=mode-145] .mname,#harm-h7:checked ~ .page label[for=mode-145] .htags{color:#fff!important}
+#mode-0:checked ~ .page label[for=mode-0]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-1:checked ~ .page label[for=mode-1]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-2:checked ~ .page label[for=mode-2]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-3:checked ~ .page label[for=mode-3]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-4:checked ~ .page label[for=mode-4]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-5:checked ~ .page label[for=mode-5]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-6:checked ~ .page label[for=mode-6]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-7:checked ~ .page label[for=mode-7]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-8:checked ~ .page label[for=mode-8]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-9:checked ~ .page label[for=mode-9]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-10:checked ~ .page label[for=mode-10]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-11:checked ~ .page label[for=mode-11]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-12:checked ~ .page label[for=mode-12]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-13:checked ~ .page label[for=mode-13]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-14:checked ~ .page label[for=mode-14]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-15:checked ~ .page label[for=mode-15]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-16:checked ~ .page label[for=mode-16]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-17:checked ~ .page label[for=mode-17]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-18:checked ~ .page label[for=mode-18]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-19:checked ~ .page label[for=mode-19]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-20:checked ~ .page label[for=mode-20]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-21:checked ~ .page label[for=mode-21]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-22:checked ~ .page label[for=mode-22]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-23:checked ~ .page label[for=mode-23]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-24:checked ~ .page label[for=mode-24]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-25:checked ~ .page label[for=mode-25]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-26:checked ~ .page label[for=mode-26]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-27:checked ~ .page label[for=mode-27]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-28:checked ~ .page label[for=mode-28]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-29:checked ~ .page label[for=mode-29]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-30:checked ~ .page label[for=mode-30]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-31:checked ~ .page label[for=mode-31]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-32:checked ~ .page label[for=mode-32]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-33:checked ~ .page label[for=mode-33]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-34:checked ~ .page label[for=mode-34]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-35:checked ~ .page label[for=mode-35]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-36:checked ~ .page label[for=mode-36]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-37:checked ~ .page label[for=mode-37]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-38:checked ~ .page label[for=mode-38]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-39:checked ~ .page label[for=mode-39]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-40:checked ~ .page label[for=mode-40]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-41:checked ~ .page label[for=mode-41]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-42:checked ~ .page label[for=mode-42]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-43:checked ~ .page label[for=mode-43]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-44:checked ~ .page label[for=mode-44]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-45:checked ~ .page label[for=mode-45]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-46:checked ~ .page label[for=mode-46]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-47:checked ~ .page label[for=mode-47]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-48:checked ~ .page label[for=mode-48]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-49:checked ~ .page label[for=mode-49]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-50:checked ~ .page label[for=mode-50]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-51:checked ~ .page label[for=mode-51]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-52:checked ~ .page label[for=mode-52]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-53:checked ~ .page label[for=mode-53]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-54:checked ~ .page label[for=mode-54]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-55:checked ~ .page label[for=mode-55]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-56:checked ~ .page label[for=mode-56]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-57:checked ~ .page label[for=mode-57]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-58:checked ~ .page label[for=mode-58]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-59:checked ~ .page label[for=mode-59]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-60:checked ~ .page label[for=mode-60]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-61:checked ~ .page label[for=mode-61]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-62:checked ~ .page label[for=mode-62]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-63:checked ~ .page label[for=mode-63]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-64:checked ~ .page label[for=mode-64]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-65:checked ~ .page label[for=mode-65]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-66:checked ~ .page label[for=mode-66]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-67:checked ~ .page label[for=mode-67]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-68:checked ~ .page label[for=mode-68]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-69:checked ~ .page label[for=mode-69]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-70:checked ~ .page label[for=mode-70]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-71:checked ~ .page label[for=mode-71]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-72:checked ~ .page label[for=mode-72]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-73:checked ~ .page label[for=mode-73]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-74:checked ~ .page label[for=mode-74]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-75:checked ~ .page label[for=mode-75]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-76:checked ~ .page label[for=mode-76]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-77:checked ~ .page label[for=mode-77]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-78:checked ~ .page label[for=mode-78]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-79:checked ~ .page label[for=mode-79]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-80:checked ~ .page label[for=mode-80]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-81:checked ~ .page label[for=mode-81]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-82:checked ~ .page label[for=mode-82]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-83:checked ~ .page label[for=mode-83]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-84:checked ~ .page label[for=mode-84]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-85:checked ~ .page label[for=mode-85]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-86:checked ~ .page label[for=mode-86]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-87:checked ~ .page label[for=mode-87]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-88:checked ~ .page label[for=mode-88]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-89:checked ~ .page label[for=mode-89]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-90:checked ~ .page label[for=mode-90]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-91:checked ~ .page label[for=mode-91]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-92:checked ~ .page label[for=mode-92]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-93:checked ~ .page label[for=mode-93]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-94:checked ~ .page label[for=mode-94]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-95:checked ~ .page label[for=mode-95]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-96:checked ~ .page label[for=mode-96]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-97:checked ~ .page label[for=mode-97]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-98:checked ~ .page label[for=mode-98]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-99:checked ~ .page label[for=mode-99]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-100:checked ~ .page label[for=mode-100]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-101:checked ~ .page label[for=mode-101]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-102:checked ~ .page label[for=mode-102]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-103:checked ~ .page label[for=mode-103]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-104:checked ~ .page label[for=mode-104]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-105:checked ~ .page label[for=mode-105]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-106:checked ~ .page label[for=mode-106]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-107:checked ~ .page label[for=mode-107]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-108:checked ~ .page label[for=mode-108]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-109:checked ~ .page label[for=mode-109]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-110:checked ~ .page label[for=mode-110]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-111:checked ~ .page label[for=mode-111]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-112:checked ~ .page label[for=mode-112]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-113:checked ~ .page label[for=mode-113]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-114:checked ~ .page label[for=mode-114]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-115:checked ~ .page label[for=mode-115]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-116:checked ~ .page label[for=mode-116]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-117:checked ~ .page label[for=mode-117]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-118:checked ~ .page label[for=mode-118]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-119:checked ~ .page label[for=mode-119]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-120:checked ~ .page label[for=mode-120]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-121:checked ~ .page label[for=mode-121]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-122:checked ~ .page label[for=mode-122]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-123:checked ~ .page label[for=mode-123]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-124:checked ~ .page label[for=mode-124]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-125:checked ~ .page label[for=mode-125]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-126:checked ~ .page label[for=mode-126]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-127:checked ~ .page label[for=mode-127]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-128:checked ~ .page label[for=mode-128]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-129:checked ~ .page label[for=mode-129]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-130:checked ~ .page label[for=mode-130]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-131:checked ~ .page label[for=mode-131]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-132:checked ~ .page label[for=mode-132]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-133:checked ~ .page label[for=mode-133]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-134:checked ~ .page label[for=mode-134]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-135:checked ~ .page label[for=mode-135]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-136:checked ~ .page label[for=mode-136]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-137:checked ~ .page label[for=mode-137]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-138:checked ~ .page label[for=mode-138]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-139:checked ~ .page label[for=mode-139]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-140:checked ~ .page label[for=mode-140]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-141:checked ~ .page label[for=mode-141]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-142:checked ~ .page label[for=mode-142]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-143:checked ~ .page label[for=mode-143]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-144:checked ~ .page label[for=mode-144]{outline:2px solid #1a1a18;outline-offset:1px}
+#mode-145:checked ~ .page label[for=mode-145]{outline:2px solid #1a1a18;outline-offset:1px}
+
+/* ── Act Panel (bottom sheet) ── */
+.act-panel{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:#fff;
+  border-top:0.5px solid #d3d1c7;
+  border-radius:14px 14px 0 0;
+  box-shadow:0 -4px 24px rgba(0,0,0,0.13);
+  padding:14px 16px 28px;
+  max-height:55vh;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  z-index:100;
+}
+#mode-0:checked ~ .page #panel-0{display:block}
+#mode-1:checked ~ .page #panel-1{display:block}
+#mode-2:checked ~ .page #panel-2{display:block}
+#mode-3:checked ~ .page #panel-3{display:block}
+#mode-4:checked ~ .page #panel-4{display:block}
+#mode-5:checked ~ .page #panel-5{display:block}
+#mode-6:checked ~ .page #panel-6{display:block}
+#mode-7:checked ~ .page #panel-7{display:block}
+#mode-8:checked ~ .page #panel-8{display:block}
+#mode-9:checked ~ .page #panel-9{display:block}
+#mode-10:checked ~ .page #panel-10{display:block}
+#mode-11:checked ~ .page #panel-11{display:block}
+#mode-12:checked ~ .page #panel-12{display:block}
+#mode-13:checked ~ .page #panel-13{display:block}
+#mode-14:checked ~ .page #panel-14{display:block}
+#mode-15:checked ~ .page #panel-15{display:block}
+#mode-16:checked ~ .page #panel-16{display:block}
+#mode-17:checked ~ .page #panel-17{display:block}
+#mode-18:checked ~ .page #panel-18{display:block}
+#mode-19:checked ~ .page #panel-19{display:block}
+#mode-20:checked ~ .page #panel-20{display:block}
+#mode-21:checked ~ .page #panel-21{display:block}
+#mode-22:checked ~ .page #panel-22{display:block}
+#mode-23:checked ~ .page #panel-23{display:block}
+#mode-24:checked ~ .page #panel-24{display:block}
+#mode-25:checked ~ .page #panel-25{display:block}
+#mode-26:checked ~ .page #panel-26{display:block}
+#mode-27:checked ~ .page #panel-27{display:block}
+#mode-28:checked ~ .page #panel-28{display:block}
+#mode-29:checked ~ .page #panel-29{display:block}
+#mode-30:checked ~ .page #panel-30{display:block}
+#mode-31:checked ~ .page #panel-31{display:block}
+#mode-32:checked ~ .page #panel-32{display:block}
+#mode-33:checked ~ .page #panel-33{display:block}
+#mode-34:checked ~ .page #panel-34{display:block}
+#mode-35:checked ~ .page #panel-35{display:block}
+#mode-36:checked ~ .page #panel-36{display:block}
+#mode-37:checked ~ .page #panel-37{display:block}
+#mode-38:checked ~ .page #panel-38{display:block}
+#mode-39:checked ~ .page #panel-39{display:block}
+#mode-40:checked ~ .page #panel-40{display:block}
+#mode-41:checked ~ .page #panel-41{display:block}
+#mode-42:checked ~ .page #panel-42{display:block}
+#mode-43:checked ~ .page #panel-43{display:block}
+#mode-44:checked ~ .page #panel-44{display:block}
+#mode-45:checked ~ .page #panel-45{display:block}
+#mode-46:checked ~ .page #panel-46{display:block}
+#mode-47:checked ~ .page #panel-47{display:block}
+#mode-48:checked ~ .page #panel-48{display:block}
+#mode-49:checked ~ .page #panel-49{display:block}
+#mode-50:checked ~ .page #panel-50{display:block}
+#mode-51:checked ~ .page #panel-51{display:block}
+#mode-52:checked ~ .page #panel-52{display:block}
+#mode-53:checked ~ .page #panel-53{display:block}
+#mode-54:checked ~ .page #panel-54{display:block}
+#mode-55:checked ~ .page #panel-55{display:block}
+#mode-56:checked ~ .page #panel-56{display:block}
+#mode-57:checked ~ .page #panel-57{display:block}
+#mode-58:checked ~ .page #panel-58{display:block}
+#mode-59:checked ~ .page #panel-59{display:block}
+#mode-60:checked ~ .page #panel-60{display:block}
+#mode-61:checked ~ .page #panel-61{display:block}
+#mode-62:checked ~ .page #panel-62{display:block}
+#mode-63:checked ~ .page #panel-63{display:block}
+#mode-64:checked ~ .page #panel-64{display:block}
+#mode-65:checked ~ .page #panel-65{display:block}
+#mode-66:checked ~ .page #panel-66{display:block}
+#mode-67:checked ~ .page #panel-67{display:block}
+#mode-68:checked ~ .page #panel-68{display:block}
+#mode-69:checked ~ .page #panel-69{display:block}
+#mode-70:checked ~ .page #panel-70{display:block}
+#mode-71:checked ~ .page #panel-71{display:block}
+#mode-72:checked ~ .page #panel-72{display:block}
+#mode-73:checked ~ .page #panel-73{display:block}
+#mode-74:checked ~ .page #panel-74{display:block}
+#mode-75:checked ~ .page #panel-75{display:block}
+#mode-76:checked ~ .page #panel-76{display:block}
+#mode-77:checked ~ .page #panel-77{display:block}
+#mode-78:checked ~ .page #panel-78{display:block}
+#mode-79:checked ~ .page #panel-79{display:block}
+#mode-80:checked ~ .page #panel-80{display:block}
+#mode-81:checked ~ .page #panel-81{display:block}
+#mode-82:checked ~ .page #panel-82{display:block}
+#mode-83:checked ~ .page #panel-83{display:block}
+#mode-84:checked ~ .page #panel-84{display:block}
+#mode-85:checked ~ .page #panel-85{display:block}
+#mode-86:checked ~ .page #panel-86{display:block}
+#mode-87:checked ~ .page #panel-87{display:block}
+#mode-88:checked ~ .page #panel-88{display:block}
+#mode-89:checked ~ .page #panel-89{display:block}
+#mode-90:checked ~ .page #panel-90{display:block}
+#mode-91:checked ~ .page #panel-91{display:block}
+#mode-92:checked ~ .page #panel-92{display:block}
+#mode-93:checked ~ .page #panel-93{display:block}
+#mode-94:checked ~ .page #panel-94{display:block}
+#mode-95:checked ~ .page #panel-95{display:block}
+#mode-96:checked ~ .page #panel-96{display:block}
+#mode-97:checked ~ .page #panel-97{display:block}
+#mode-98:checked ~ .page #panel-98{display:block}
+#mode-99:checked ~ .page #panel-99{display:block}
+#mode-100:checked ~ .page #panel-100{display:block}
+#mode-101:checked ~ .page #panel-101{display:block}
+#mode-102:checked ~ .page #panel-102{display:block}
+#mode-103:checked ~ .page #panel-103{display:block}
+#mode-104:checked ~ .page #panel-104{display:block}
+#mode-105:checked ~ .page #panel-105{display:block}
+#mode-106:checked ~ .page #panel-106{display:block}
+#mode-107:checked ~ .page #panel-107{display:block}
+#mode-108:checked ~ .page #panel-108{display:block}
+#mode-109:checked ~ .page #panel-109{display:block}
+#mode-110:checked ~ .page #panel-110{display:block}
+#mode-111:checked ~ .page #panel-111{display:block}
+#mode-112:checked ~ .page #panel-112{display:block}
+#mode-113:checked ~ .page #panel-113{display:block}
+#mode-114:checked ~ .page #panel-114{display:block}
+#mode-115:checked ~ .page #panel-115{display:block}
+#mode-116:checked ~ .page #panel-116{display:block}
+#mode-117:checked ~ .page #panel-117{display:block}
+#mode-118:checked ~ .page #panel-118{display:block}
+#mode-119:checked ~ .page #panel-119{display:block}
+#mode-120:checked ~ .page #panel-120{display:block}
+#mode-121:checked ~ .page #panel-121{display:block}
+#mode-122:checked ~ .page #panel-122{display:block}
+#mode-123:checked ~ .page #panel-123{display:block}
+#mode-124:checked ~ .page #panel-124{display:block}
+#mode-125:checked ~ .page #panel-125{display:block}
+#mode-126:checked ~ .page #panel-126{display:block}
+#mode-127:checked ~ .page #panel-127{display:block}
+#mode-128:checked ~ .page #panel-128{display:block}
+#mode-129:checked ~ .page #panel-129{display:block}
+#mode-130:checked ~ .page #panel-130{display:block}
+#mode-131:checked ~ .page #panel-131{display:block}
+#mode-132:checked ~ .page #panel-132{display:block}
+#mode-133:checked ~ .page #panel-133{display:block}
+#mode-134:checked ~ .page #panel-134{display:block}
+#mode-135:checked ~ .page #panel-135{display:block}
+#mode-136:checked ~ .page #panel-136{display:block}
+#mode-137:checked ~ .page #panel-137{display:block}
+#mode-138:checked ~ .page #panel-138{display:block}
+#mode-139:checked ~ .page #panel-139{display:block}
+#mode-140:checked ~ .page #panel-140{display:block}
+#mode-141:checked ~ .page #panel-141{display:block}
+#mode-142:checked ~ .page #panel-142{display:block}
+#mode-143:checked ~ .page #panel-143{display:block}
+#mode-144:checked ~ .page #panel-144{display:block}
+#mode-145:checked ~ .page #panel-145{display:block}
+
+.act-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:8px}
+.act-header-text{flex:1}
+.act-stage-label{font-size:10px;color:#888780;display:block;margin-bottom:2px}
+.act-mode-name{font-size:13px;font-weight:500;color:#1a1a18}
+.close-btn{background:none;border:none;font-size:22px;color:#888780;cursor:pointer;padding:0;line-height:1;display:block;text-decoration:none;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.act-harm-block{margin-bottom:10px}
+.act-harm-label{font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;color:#fff;display:inline-block;margin-bottom:5px}
+.act-list{list-style:none}
+.act-item{font-size:11px;color:#444441;line-height:1.7;padding:2px 0;border-bottom:0.5px solid #f1efe8;display:flex;gap:5px}
+.act-item:last-child{border-bottom:none}
+
+.footer{font-size:10px;color:#b4b2a9;margin-top:24px;padding-top:10px;border-top:0.5px solid #e8e6df;text-align:center;letter-spacing:0.02em}
+.act-item::before{content:"\2192";color:#b4b2a9;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- Harm radio inputs -->
+<input type="radio" name="harm" id="harm-none" checked>
+<input type="radio" name="harm" id="harm-h1">
+<input type="radio" name="harm" id="harm-h2">
+<input type="radio" name="harm" id="harm-h3">
+<input type="radio" name="harm" id="harm-h4">
+<input type="radio" name="harm" id="harm-h5">
+<input type="radio" name="harm" id="harm-h6">
+<input type="radio" name="harm" id="harm-h7">
+<!-- Mode radio inputs -->
+<input type="radio" name="mode" id="mode-0">
+<input type="radio" name="mode" id="mode-1">
+<input type="radio" name="mode" id="mode-2">
+<input type="radio" name="mode" id="mode-3">
+<input type="radio" name="mode" id="mode-4">
+<input type="radio" name="mode" id="mode-5">
+<input type="radio" name="mode" id="mode-6">
+<input type="radio" name="mode" id="mode-7">
+<input type="radio" name="mode" id="mode-8">
+<input type="radio" name="mode" id="mode-9">
+<input type="radio" name="mode" id="mode-10">
+<input type="radio" name="mode" id="mode-11">
+<input type="radio" name="mode" id="mode-12">
+<input type="radio" name="mode" id="mode-13">
+<input type="radio" name="mode" id="mode-14">
+<input type="radio" name="mode" id="mode-15">
+<input type="radio" name="mode" id="mode-16">
+<input type="radio" name="mode" id="mode-17">
+<input type="radio" name="mode" id="mode-18">
+<input type="radio" name="mode" id="mode-19">
+<input type="radio" name="mode" id="mode-20">
+<input type="radio" name="mode" id="mode-21">
+<input type="radio" name="mode" id="mode-22">
+<input type="radio" name="mode" id="mode-23">
+<input type="radio" name="mode" id="mode-24">
+<input type="radio" name="mode" id="mode-25">
+<input type="radio" name="mode" id="mode-26">
+<input type="radio" name="mode" id="mode-27">
+<input type="radio" name="mode" id="mode-28">
+<input type="radio" name="mode" id="mode-29">
+<input type="radio" name="mode" id="mode-30">
+<input type="radio" name="mode" id="mode-31">
+<input type="radio" name="mode" id="mode-32">
+<input type="radio" name="mode" id="mode-33">
+<input type="radio" name="mode" id="mode-34">
+<input type="radio" name="mode" id="mode-35">
+<input type="radio" name="mode" id="mode-36">
+<input type="radio" name="mode" id="mode-37">
+<input type="radio" name="mode" id="mode-38">
+<input type="radio" name="mode" id="mode-39">
+<input type="radio" name="mode" id="mode-40">
+<input type="radio" name="mode" id="mode-41">
+<input type="radio" name="mode" id="mode-42">
+<input type="radio" name="mode" id="mode-43">
+<input type="radio" name="mode" id="mode-44">
+<input type="radio" name="mode" id="mode-45">
+<input type="radio" name="mode" id="mode-46">
+<input type="radio" name="mode" id="mode-47">
+<input type="radio" name="mode" id="mode-48">
+<input type="radio" name="mode" id="mode-49">
+<input type="radio" name="mode" id="mode-50">
+<input type="radio" name="mode" id="mode-51">
+<input type="radio" name="mode" id="mode-52">
+<input type="radio" name="mode" id="mode-53">
+<input type="radio" name="mode" id="mode-54">
+<input type="radio" name="mode" id="mode-55">
+<input type="radio" name="mode" id="mode-56">
+<input type="radio" name="mode" id="mode-57">
+<input type="radio" name="mode" id="mode-58">
+<input type="radio" name="mode" id="mode-59">
+<input type="radio" name="mode" id="mode-60">
+<input type="radio" name="mode" id="mode-61">
+<input type="radio" name="mode" id="mode-62">
+<input type="radio" name="mode" id="mode-63">
+<input type="radio" name="mode" id="mode-64">
+<input type="radio" name="mode" id="mode-65">
+<input type="radio" name="mode" id="mode-66">
+<input type="radio" name="mode" id="mode-67">
+<input type="radio" name="mode" id="mode-68">
+<input type="radio" name="mode" id="mode-69">
+<input type="radio" name="mode" id="mode-70">
+<input type="radio" name="mode" id="mode-71">
+<input type="radio" name="mode" id="mode-72">
+<input type="radio" name="mode" id="mode-73">
+<input type="radio" name="mode" id="mode-74">
+<input type="radio" name="mode" id="mode-75">
+<input type="radio" name="mode" id="mode-76">
+<input type="radio" name="mode" id="mode-77">
+<input type="radio" name="mode" id="mode-78">
+<input type="radio" name="mode" id="mode-79">
+<input type="radio" name="mode" id="mode-80">
+<input type="radio" name="mode" id="mode-81">
+<input type="radio" name="mode" id="mode-82">
+<input type="radio" name="mode" id="mode-83">
+<input type="radio" name="mode" id="mode-84">
+<input type="radio" name="mode" id="mode-85">
+<input type="radio" name="mode" id="mode-86">
+<input type="radio" name="mode" id="mode-87">
+<input type="radio" name="mode" id="mode-88">
+<input type="radio" name="mode" id="mode-89">
+<input type="radio" name="mode" id="mode-90">
+<input type="radio" name="mode" id="mode-91">
+<input type="radio" name="mode" id="mode-92">
+<input type="radio" name="mode" id="mode-93">
+<input type="radio" name="mode" id="mode-94">
+<input type="radio" name="mode" id="mode-95">
+<input type="radio" name="mode" id="mode-96">
+<input type="radio" name="mode" id="mode-97">
+<input type="radio" name="mode" id="mode-98">
+<input type="radio" name="mode" id="mode-99">
+<input type="radio" name="mode" id="mode-100">
+<input type="radio" name="mode" id="mode-101">
+<input type="radio" name="mode" id="mode-102">
+<input type="radio" name="mode" id="mode-103">
+<input type="radio" name="mode" id="mode-104">
+<input type="radio" name="mode" id="mode-105">
+<input type="radio" name="mode" id="mode-106">
+<input type="radio" name="mode" id="mode-107">
+<input type="radio" name="mode" id="mode-108">
+<input type="radio" name="mode" id="mode-109">
+<input type="radio" name="mode" id="mode-110">
+<input type="radio" name="mode" id="mode-111">
+<input type="radio" name="mode" id="mode-112">
+<input type="radio" name="mode" id="mode-113">
+<input type="radio" name="mode" id="mode-114">
+<input type="radio" name="mode" id="mode-115">
+<input type="radio" name="mode" id="mode-116">
+<input type="radio" name="mode" id="mode-117">
+<input type="radio" name="mode" id="mode-118">
+<input type="radio" name="mode" id="mode-119">
+<input type="radio" name="mode" id="mode-120">
+<input type="radio" name="mode" id="mode-121">
+<input type="radio" name="mode" id="mode-122">
+<input type="radio" name="mode" id="mode-123">
+<input type="radio" name="mode" id="mode-124">
+<input type="radio" name="mode" id="mode-125">
+<input type="radio" name="mode" id="mode-126">
+<input type="radio" name="mode" id="mode-127">
+<input type="radio" name="mode" id="mode-128">
+<input type="radio" name="mode" id="mode-129">
+<input type="radio" name="mode" id="mode-130">
+<input type="radio" name="mode" id="mode-131">
+<input type="radio" name="mode" id="mode-132">
+<input type="radio" name="mode" id="mode-133">
+<input type="radio" name="mode" id="mode-134">
+<input type="radio" name="mode" id="mode-135">
+<input type="radio" name="mode" id="mode-136">
+<input type="radio" name="mode" id="mode-137">
+<input type="radio" name="mode" id="mode-138">
+<input type="radio" name="mode" id="mode-139">
+<input type="radio" name="mode" id="mode-140">
+<input type="radio" name="mode" id="mode-141">
+<input type="radio" name="mode" id="mode-142">
+<input type="radio" name="mode" id="mode-143">
+<input type="radio" name="mode" id="mode-144">
+<input type="radio" name="mode" id="mode-145">
+<input type="radio" name="mode" id="mode-none" checked>
+<div class="page">
+<h1>LURE Framework <span style="font-size:11px;font-weight:400;color:#888780;letter-spacing:0.02em">Lifecycle of User-targeted Risk and Exploitation</span></h1>
+<div class="sub">Harm を選択 → Mode が色反転 → Mode をタップで Act を表示　|　ver.01</div>
+<div class="harm-row">
+<label class="harm-btn hb-H1" for="harm-h1">H1 金銭・財産</label>
+<label class="harm-btn hb-H2" for="harm-h2">H2 情報・プライバシー</label>
+<label class="harm-btn hb-H3" for="harm-h3">H3 性的搾取</label>
+<label class="harm-btn hb-H4" for="harm-h4">H4 心理・精神</label>
+<label class="harm-btn hb-H5" for="harm-h5">H5 社会的信用</label>
+<label class="harm-btn hb-H6" for="harm-h6">H6 法的巻き込み</label>
+<label class="harm-btn hb-H7" for="harm-h7">H7 身体・生命</label>
+</div>
+<div class="legend">
+<span class="legend-default">Harmを選択するとCriminal PathのModeが強調されます</span>
+<span class="legend-h1">H1 Financial — 金銭・財産 のPathを表示中</span>
+<span class="legend-h2">H2 Informational — 情報・プライバシー のPathを表示中</span>
+<span class="legend-h3">H3 Sexual — 性的搾取 のPathを表示中</span>
+<span class="legend-h4">H4 Psychological — 心理・精神 のPathを表示中</span>
+<span class="legend-h5">H5 Reputational — 社会的信用 のPathを表示中</span>
+<span class="legend-h6">H6 Legal — 法的巻き込み のPathを表示中</span>
+<span class="legend-h7">H7 Physical — 身体・生命 のPathを表示中</span>
+</div>
+<div class="matrix-wrap"><div class="matrix">
+<div class="stage-col">
+<div class="stage-head"><div class="snum">S1</div><div class="sen">Resource Dev.</div><div class="sja">準備</div></div>
+<div class="modes-list">
+<label class="mode-card" for="mode-0"><div class="mname">犯罪インフラ調達</div><div class="htags">H1 H2 H3 H4 H5 H6 H7</div></label>
+<label class="mode-card" for="mode-1"><div class="mname">資金洗浄インフラ</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-2"><div class="mname">データ売買インフラ</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-3"><div class="mname">コンテンツインフラ</div><div class="htags">H3 H5</div></label>
+<label class="mode-card" for="mode-4"><div class="mname">決済インフラ</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-5"><div class="mname">組織的インフラ</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-6"><div class="mname">役割分担体制</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-7"><div class="mname">法的知識の収集</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-8"><div class="mname">情報収集インフラ</div><div class="htags">H7</div></label>
+</div>
+</div>
+<div class="stage-col">
+<div class="stage-head"><div class="snum">S2</div><div class="sen">Target Selection</div><div class="sja">標的選定</div></div>
+<div class="modes-list">
+<label class="mode-card" for="mode-9"><div class="mname">SNS情報収集</div><div class="htags">H1 H2 H3 H4 H5 H6 H7</div></label>
+<label class="mode-card" for="mode-10"><div class="mname">漏洩DB活用</div><div class="htags">H1 H2</div></label>
+<label class="mode-card" for="mode-11"><div class="mname">広告ターゲティング</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-12"><div class="mname">メタデータ収集</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-13"><div class="mname">デバイス情報収集</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-14"><div class="mname">プラットフォーム探索</div><div class="htags">H3 H4 H6 H7</div></label>
+<label class="mode-card" for="mode-15"><div class="mname">関係者特定</div><div class="htags">H3 H4 H5 H6 H7</div></label>
+<label class="mode-card" for="mode-16"><div class="mname">弱点調査</div><div class="htags">H5</div></label>
+</div>
+</div>
+<div class="stage-col">
+<div class="stage-head"><div class="snum">S3</div><div class="sen">Approach</div><div class="sja">接触</div></div>
+<div class="modes-list">
+<label class="mode-card" for="mode-17"><div class="mname">フィッシングメール</div><div class="htags">H1 H2</div></label>
+<label class="mode-card" for="mode-18"><div class="mname">スミッシング</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-19"><div class="mname">SNS DM</div><div class="htags">H1 H3 H4 H7</div></label>
+<label class="mode-card" for="mode-20"><div class="mname">偽広告</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-21"><div class="mname">プレテキスティング</div><div class="htags">H1 H2</div></label>
+<label class="mode-card" for="mode-22"><div class="mname">既存関係活用</div><div class="htags">H1 H2 H3 H4 H5 H6 H7</div></label>
+<label class="mode-card" for="mode-23"><div class="mname">偽アプリ配布</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-24"><div class="mname">ゲーム内チャット</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-25"><div class="mname">マッチングアプリ</div><div class="htags">H3 H7</div></label>
+<label class="mode-card" for="mode-26"><div class="mname">なりすまし接触</div><div class="htags">H3 H4 H5 H7</div></label>
+<label class="mode-card" for="mode-27"><div class="mname">コミュニティ潜入</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-28"><div class="mname">偽求人・勧誘</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-29"><div class="mname">匿名接触</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-30"><div class="mname">偽求人</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-31"><div class="mname">副業勧誘</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-32"><div class="mname">友人・知人経由</div><div class="htags">H6</div></label>
+</div>
+</div>
+<div class="stage-col">
+<div class="stage-head"><div class="snum">S4</div><div class="sen">Trust Shaping</div><div class="sja">信頼形成</div></div>
+<div class="modes-list">
+<label class="mode-card" for="mode-33"><div class="mname">権威偽装</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-34"><div class="mname">実績演出</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-35"><div class="mname">少額成功体験</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-36"><div class="mname">共感・傾聴演技</div><div class="htags">H1 H3 H4 H7</div></label>
+<label class="mode-card" for="mode-37"><div class="mname">互恵性の利用</div><div class="htags">H1 H3</div></label>
+<label class="mode-card" for="mode-38"><div class="mname">仲間意識の醸成</div><div class="htags">H1 H3</div></label>
+<label class="mode-card" for="mode-39"><div class="mname">（このHarmでは省略）</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-40"><div class="mname">段階的な関係深化</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-41"><div class="mname">孤立化工作</div><div class="htags">H3 H4 H7</div></label>
+<label class="mode-card" for="mode-42"><div class="mname">依存関係の形成</div><div class="htags">H4 H7</div></label>
+<label class="mode-card" for="mode-43"><div class="mname">世界観の書き換え</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-44"><div class="mname">ラブボミング</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-45"><div class="mname">信頼獲得後の裏切り</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-46"><div class="mname">内部情報の収集</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-47"><div class="mname">合法性の演出</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-48"><div class="mname">少額報酬の先払い</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-49"><div class="mname">共犯意識の形成</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-50"><div class="mname">段階的関与の深化</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-51"><div class="mname">過剰な愛情表現</div><div class="htags">H7</div></label>
+</div>
+</div>
+<div class="stage-col">
+<div class="stage-head"><div class="snum">S5</div><div class="sen">Behavioral Steering</div><div class="sja">行動誘導</div></div>
+<div class="modes-list">
+<label class="mode-card" for="mode-52"><div class="mname">緊急性演出</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-53"><div class="mname">損失回避フレーミング</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-54"><div class="mname">権威への服従誘導</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-55"><div class="mname">社会的証明</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-56"><div class="mname">第三者経由の説得</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-57"><div class="mname">送金指示</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-58"><div class="mname">アプリインストール誘導</div><div class="htags">H1 H2</div></label>
+<label class="mode-card" for="mode-59"><div class="mname">個人情報入力誘導</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-60"><div class="mname">認証情報入力誘導</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-61"><div class="mname">権限付与誘導</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-62"><div class="mname">性的コンテンツ要求</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-63"><div class="mname">秘密の共有強要</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-64"><div class="mname">既成事実化</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-65"><div class="mname">対面誘導</div><div class="htags">H3 H7</div></label>
+<label class="mode-card" for="mode-66"><div class="mname">行動規範の強制</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-67"><div class="mname">報酬と罰の操作</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-68"><div class="mname">集団圧力</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-69"><div class="mname">自己否定の植え付け</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-70"><div class="mname">（このHarmでは省略）</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-71"><div class="mname">口座提供の依頼</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-72"><div class="mname">荷物受け取り依頼</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-73"><div class="mname">現金引き出し依頼</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-74"><div class="mname">契約・申込の代行依頼</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-75"><div class="mname">脅迫による継続強制</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-76"><div class="mname">居場所情報の収集</div><div class="htags">H7</div></label>
+<label class="mode-card" for="mode-77"><div class="mname">孤立した場所への誘導</div><div class="htags">H7</div></label>
+<label class="mode-card" for="mode-78"><div class="mname">監視の正当化</div><div class="htags">H7</div></label>
+</div>
+</div>
+<div class="stage-col">
+<div class="stage-head"><div class="snum">S6</div><div class="sen">Compromise</div><div class="sja">侵入・掌握</div></div>
+<div class="modes-list">
+<label class="mode-card" for="mode-79"><div class="mname">認証情報窃取</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-80"><div class="mname">リモート操作</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-81"><div class="mname">SIMスワッピング</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-82"><div class="mname">パスワードリセット連鎖</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-83"><div class="mname">アカウント乗っ取り</div><div class="htags">H2 H3 H5</div></label>
+<label class="mode-card" for="mode-84"><div class="mname">スパイウェア常駐</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-85"><div class="mname">クッキー・セッション窃取</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-86"><div class="mname">クレデンシャルスタッフィング</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-87"><div class="mname">性的画像・動画の入手</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-88"><div class="mname">ディープフェイク生成</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-89"><div class="mname">実際の性的接触</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-90"><div class="mname">心理的支配の確立</div><div class="htags">H4 H7</div></label>
+<label class="mode-card" for="mode-91"><div class="mname">現実認識の歪曲</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-92"><div class="mname">社会的孤立の完成</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-93"><div class="mname">評判インフラの掌握</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-94"><div class="mname">内部情報の入手</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-95"><div class="mname">証拠の確保</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-96"><div class="mname">借金・報酬未払い</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-97"><div class="mname">心理的支配</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-98"><div class="mname">位置情報の掌握</div><div class="htags">H7</div></label>
+<label class="mode-card" for="mode-99"><div class="mname">行動パターンの掌握</div><div class="htags">H7</div></label>
+<label class="mode-card" for="mode-100"><div class="mname">物理的アクセスの確保</div><div class="htags">H7</div></label>
+</div>
+</div>
+<div class="stage-col">
+<div class="stage-head"><div class="snum">S7</div><div class="sen">Exploitation</div><div class="sja">搾取</div></div>
+<div class="modes-list">
+<label class="mode-card" for="mode-101"><div class="mname">不正送金</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-102"><div class="mname">出金拒否・追加請求</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-103"><div class="mname">暗号資産奪取</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-104"><div class="mname">ギフトカード要求</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-105"><div class="mname">個人情報売買</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-106"><div class="mname">なりすまし利用</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-107"><div class="mname">標的型攻撃への転用</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-108"><div class="mname">位置情報の悪用</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-109"><div class="mname">セクストーション</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-110"><div class="mname">CSAM流通</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-111"><div class="mname">継続的支配</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-112"><div class="mname">追加被害者への転用</div><div class="htags">H3</div></label>
+<label class="mode-card" for="mode-113"><div class="mname">継続的精神的虐待</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-114"><div class="mname">金銭的搾取への転用</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-115"><div class="mname">性的搾取への転用</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-116"><div class="mname">犯罪行為への加担強制</div><div class="htags">H4</div></label>
+<label class="mode-card" for="mode-117"><div class="mname">偽情報拡散</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-118"><div class="mname">ドックス</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-119"><div class="mname">なりすまし投稿</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-120"><div class="mname">組織的嫌がらせ</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-121"><div class="mname">職場・家族への通報</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-122"><div class="mname">マネーミュール利用</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-123"><div class="mname">薬物・不正品の運搬</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-124"><div class="mname">詐欺の実行役化</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-125"><div class="mname">名義貸しの悪用</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-126"><div class="mname">ストーキング</div><div class="htags">H7</div></label>
+<label class="mode-card" for="mode-127"><div class="mname">監禁・拘束</div><div class="htags">H7</div></label>
+<label class="mode-card" for="mode-128"><div class="mname">身体的暴力</div><div class="htags">H7</div></label>
+<label class="mode-card" for="mode-129"><div class="mname">性的暴行</div><div class="htags">H7</div></label>
+<label class="mode-card" for="mode-130"><div class="mname">誘拐</div><div class="htags">H7</div></label>
+<label class="mode-card" for="mode-131"><div class="mname">殺傷</div><div class="htags">H7</div></label>
+</div>
+</div>
+<div class="stage-col">
+<div class="stage-head"><div class="snum">S8</div><div class="sen">Cover &amp; Exit</div><div class="sja">隠蔽・逃走</div></div>
+<div class="modes-list">
+<label class="mode-card" for="mode-132"><div class="mname">痕跡消去</div><div class="htags">H1 H2 H3 H4</div></label>
+<label class="mode-card" for="mode-133"><div class="mname">送金チェーン化</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-134"><div class="mname">捨てSIM・端末</div><div class="htags">H1</div></label>
+<label class="mode-card" for="mode-135"><div class="mname">次サイクル準備</div><div class="htags">H1 H2 H3 H4 H5 H6</div></label>
+<label class="mode-card" for="mode-136"><div class="mname">データ分散保管</div><div class="htags">H2</div></label>
+<label class="mode-card" for="mode-137"><div class="mname">匿名化</div><div class="htags">H3 H5</div></label>
+<label class="mode-card" for="mode-138"><div class="mname">被害者への口止め</div><div class="htags">H3 H4 H7</div></label>
+<label class="mode-card" for="mode-139"><div class="mname">責任転嫁</div><div class="htags">H4 H5</div></label>
+<label class="mode-card" for="mode-140"><div class="mname">拡散の自律化</div><div class="htags">H5</div></label>
+<label class="mode-card" for="mode-141"><div class="mname">被害者への責任転嫁</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-142"><div class="mname">証拠隠滅</div><div class="htags">H6 H7</div></label>
+<label class="mode-card" for="mode-143"><div class="mname">連絡遮断</div><div class="htags">H6</div></label>
+<label class="mode-card" for="mode-144"><div class="mname">アリバイ工作</div><div class="htags">H7</div></label>
+<label class="mode-card" for="mode-145"><div class="mname">逃走</div><div class="htags">H7</div></label>
+</div>
+</div>
+</div></div>
+<div class="act-panel" id="panel-0">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S1 Resource Dev. / 準備</span><span class="act-mode-name">犯罪インフラ調達</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">捨てSIM・使い捨てメール取得</li>
+<li class="act-item">偽SNSアカウント・偽プロフィールの作成</li>
+<li class="act-item">フィッシングキット・マルウェアの購入</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">スパイウェア・キーロガーの調達</li>
+<li class="act-item">偽アプリの開発・配布環境の準備</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">捨てSIM・使い捨てメールアドレスの取得</li>
+<li class="act-item">偽SNSアカウント・偽プロフィールの作成</li>
+<li class="act-item">匿名通信環境（VPN・Tor）の構築</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">偽SNSアカウント・偽プロフィールの大量作成</li>
+<li class="act-item">標的の個人情報・人間関係の事前収集</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">偽SNSアカウントの大量作成</li>
+<li class="act-item">ディープフェイク生成ツールの調達</li>
+<li class="act-item">匿名掲示板・リーク系サイトへのアクセス準備</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">捨てSIM・使い捨てメールアドレスの取得</li>
+<li class="act-item">マネーミュール口座の調達・管理体制の構築</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">捨てSIM・使い捨てメールアドレスの取得</li>
+<li class="act-item">偽SNSアカウント・偽プロフィールの作成</li>
+<li class="act-item">位置情報追跡ツール・ストーキングアプリの調達</li>
+<li class="act-item">車両・移動手段の確保</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-1">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S1 Resource Dev. / 準備</span><span class="act-mode-name">資金洗浄インフラ</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">暗号資産ウォレットの準備</li>
+<li class="act-item">マネーミュール口座の開設・調達</li>
+<li class="act-item">送金チェーン用口座の確保</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-2">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S1 Resource Dev. / 準備</span><span class="act-mode-name">データ売買インフラ</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">ダークウェブマーケットへのアクセス準備</li>
+<li class="act-item">購入した漏洩DBの整理・名寄せ</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-3">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S1 Resource Dev. / 準備</span><span class="act-mode-name">コンテンツインフラ</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">ディープフェイク生成ツールの調達</li>
+<li class="act-item">画像・動画収集・編集ツールの準備</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">偽情報・偽画像・偽動画の生成環境の構築</li>
+<li class="act-item">拡散用botネットワークの準備</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-4">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S1 Resource Dev. / 準備</span><span class="act-mode-name">決済インフラ</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">匿名暗号資産ウォレットの準備</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-5">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S1 Resource Dev. / 準備</span><span class="act-mode-name">組織的インフラ</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">接触役・脅迫役・説得役の役割分担体制の構築</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-6">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S1 Resource Dev. / 準備</span><span class="act-mode-name">役割分担体制</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">勧誘役・管理役・逃走役の分業体制を構築</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-7">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S1 Resource Dev. / 準備</span><span class="act-mode-name">法的知識の収集</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">各国の法律・捜査手法を研究し発覚リスクを最小化</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-8">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S1 Resource Dev. / 準備</span><span class="act-mode-name">情報収集インフラ</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">標的の生活パターン・行動範囲の事前調査体制を構築</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-9">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S2 Target Selection / 標的選定</span><span class="act-mode-name">SNS情報収集</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">公開プロフィールから資産状況・職業・生活パターンを推定</li>
+<li class="act-item">投稿写真のEXIF・位置情報から行動ルーティンを把握</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">公開プロフィール・人間関係・生活パターンを収集</li>
+<li class="act-item">友達リスト・タグ情報から関係者を特定</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">公開プロフィールから年齢・居住地・家族構成を特定</li>
+<li class="act-item">子どもの写真・動画の収集</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">公開プロフィールから孤独・悩み・脆弱性を特定</li>
+<li class="act-item">過去の投稿から精神的に不安定な時期を特定</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">職業・人間関係・社会的立場を特定</li>
+<li class="act-item">過去の投稿・発言から攻撃材料を収集</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">経済的困窮・就職難・借金などの脆弱性を特定</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">公開プロフィール・投稿から居住地・職場・生活パターンを特定</li>
+<li class="act-item">投稿写真のEXIF・背景から自宅・行動範囲を特定</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-10">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S2 Target Selection / 標的選定</span><span class="act-mode-name">漏洩DB活用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">ダークウェブで購入したメール・電話番号リストを使用</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">過去の漏洩データから標的の認証情報を入手</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-11">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S2 Target Selection / 標的選定</span><span class="act-mode-name">広告ターゲティング</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">投資・資産運用に関心のある層を広告プラットフォームで絞り込み</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-12">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S2 Target Selection / 標的選定</span><span class="act-mode-name">メタデータ収集</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">文書ファイル・SNS投稿のメタデータから生活パターンを推定</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-13">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S2 Target Selection / 標的選定</span><span class="act-mode-name">デバイス情報収集</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">フィンガープリントから端末情報を取得</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-14">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S2 Target Selection / 標的選定</span><span class="act-mode-name">プラットフォーム探索</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">ゲーム・マッチングアプリ・掲示板で脆弱な標的を探索</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">メンタルヘルス系掲示板・グループで脆弱な標的を探索</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">求人掲示板・副業紹介サイトで標的を探索</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">マッチングアプリ・SNSで標的を探索</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-15">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S2 Target Selection / 標的選定</span><span class="act-mode-name">関係者特定</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">友達リストから孤立しやすい個人を特定</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">家族・友人関係を把握し孤立度を測定</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">職場・家族・友人関係を把握し影響範囲を測定</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">家族・友人関係を把握し勧誘ルートを設計</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">家族・友人関係を把握し接触ルートを設計</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-16">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S2 Target Selection / 標的選定</span><span class="act-mode-name">弱点調査</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">過去のスキャンダル・失敗・秘密を調査</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-17">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">フィッシングメール</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">銀行・宅配・行政を騙ったメールで偽サイトへ誘導</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">サービス事業者を騙った偽サイトへ誘導</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-18">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">スミッシング</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">公式を装ったSMSで偽サイトへ誘導</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-19">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">SNS DM</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">投資情報・友人を装ったDM・フォローで接触</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">同年代・共通の趣味を装ったDMで接触</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">共感・支援を装ったDMで接触</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">恋愛・友情を装ったDMで接触</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-20">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">偽広告</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">著名人を使った偽投資広告をSNSに掲載</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-21">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">プレテキスティング</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">架空の人物・状況を作り込んで接触する口実を作る</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">架空のサポート担当者を装い接触</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-22">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">既存関係活用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">家族・友人・職場など実生活上の既存関係を起点とする</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">サービス担当者・知人を装った接触</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">交際相手・知人など既存の関係を起点とする</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">家族・宗教指導者・職場上司など既存関係から</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">元交際相手・職場同僚・近隣住民など既存関係から攻撃</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">家族・友人・職場関係者として既存の信頼関係から勧誘</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">交際相手・元配偶者・家族など既存の関係を起点とする</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-23">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">偽アプリ配布</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">正規アプリに見せかけたスパイウェアを配布</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-24">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">ゲーム内チャット</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">オンラインゲーム内で友好関係を装い接触</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-25">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">マッチングアプリ</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">恋愛感情を装い接触</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">恋愛感情を装い接触</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-26">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">なりすまし接触</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">著名人・憧れの人物を装い接触</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">専門家（カウンセラー・医師）を装い接触</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">標的の知人・関係者を装い情報収集</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">共通の知人・支援者を装い接触</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-27">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">コミュニティ潜入</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">支援グループ・宗教コミュニティに潜入し信頼を獲得</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-28">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">偽求人・勧誘</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">自己実現・社会貢献を謳った勧誘で接触</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-29">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">匿名接触</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">匿名アカウントで標的に直接接触し脅迫</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-30">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">偽求人</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">高収入・在宅・簡単な仕事を謳った偽求人で接触</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-31">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">副業勧誘</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">SNS・メッセージアプリで「簡単に稼げる副業」として勧誘</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-32">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S3 Approach / 接触</span><span class="act-mode-name">友人・知人経由</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">すでに取り込んだ人物を通じて新たな標的に接触</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-33">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">権威偽装</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">金融庁・銀行・著名投資家を騙る</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-34">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">実績演出</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">偽の運用成績・口コミ・メディア掲載を提示</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-35">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">少額成功体験</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">最初の小額投資で実際に利益を出して見せる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-36">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">共感・傾聴演技</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">相手の悩みや状況に寄り添い心理的距離を縮める</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">悩みや孤独感に寄り添い心理的距離を縮める</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">悩みや孤独感に深く寄り添い唯一の理解者を演じる</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">悩みや孤独感に寄り添い心理的距離を縮める</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-37">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">互恵性の利用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">小さな親切・情報を先に与え「返さなければ」という心理を作る</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">プレゼント・関心・称賛を先に与え依存関係を形成する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-38">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">仲間意識の醸成</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">「あなただけに教える」「同じ境遇の仲間」として取り込む</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">「あなただけが特別」「秘密の関係」として取り込む</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-39">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">（このHarmでは省略）</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">技術的侵害が中心のためTrust Shapingは薄い</li>
+<li class="act-item">公式サイト模倣による一時的な信頼演出のみ</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-40">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">段階的な関係深化</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">長期間かけて恋愛・友情関係を演出する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-41">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">孤立化工作</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">家族・友人との関係を引き離し依存を深める</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">家族・友人を「あなたの敵・理解者ではない」と引き離す</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">家族・友人との関係を引き離し依存を深める</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-42">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">依存関係の形成</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">精神的支柱として機能し生活のあらゆる判断に介入する</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">精神的支柱として機能し生活全般に介入する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-43">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">世界観の書き換え</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">独自の価値観・思想を繰り返し刷り込む（マインドコントロール）</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-44">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">ラブボミング</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">過剰な愛情・称賛を浴びせ判断力を麻痺させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-45">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">信頼獲得後の裏切り</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">友人・支援者を装い親密になった後に攻撃に転じる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-46">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">内部情報の収集</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">職場・コミュニティ内部の人間を取り込み情報を得る</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-47">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">合法性の演出</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">契約書・会社概要・実績を偽造し正規ビジネスに見せる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-48">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">少額報酬の先払い</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">最初の仕事で実際に報酬を支払い信頼させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-49">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">共犯意識の形成</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">「みんなやっている」「会社の指示だから問題ない」と正当化させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-50">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">段階的関与の深化</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">最初は軽微な作業から始め徐々に犯罪性の高い作業へ移行する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-51">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S4 Trust Shaping / 信頼形成</span><span class="act-mode-name">過剰な愛情表現</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">ラブボミングで判断力を麻痺させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-52">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">緊急性演出</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">「今日中に手続きしないと口座凍結」と時間的プレッシャーをかける</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-53">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">損失回避フレーミング</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">「今動かないと〇万円損する」と恐怖で行動を促す</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-54">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">権威への服従誘導</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">「警察・弁護士・金融庁の指示に従うよう」と言い包める</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-55">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">社会的証明</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">「すでに〇〇人が利益を得た」と同調圧力をかける</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-56">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">第三者経由の説得</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">「私の上司から直接説明させます」と権威を重ねる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-57">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">送金指示</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">具体的な口座番号・手順を提示して送金させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-58">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">アプリインストール誘導</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">偽投資アプリ・リモート操作ツールを導入させる</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">スパイウェア・位置情報追跡アプリを導入させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-59">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">個人情報入力誘導</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">氏名・住所・生年月日・マイナンバーを偽サイトに入力させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-60">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">認証情報入力誘導</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">ID・パスワード・秘密の質問を入力させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-61">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">権限付与誘導</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">連絡先・カメラ・マイク・位置情報へのアクセスを許可させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-62">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">性的コンテンツ要求</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">段階的に性的な画像・動画の送付を要求する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-63">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">秘密の共有強要</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">「二人だけの秘密」として親や友人への相談を禁じる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-64">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">既成事実化</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">一度送らせた画像を使い「もう戻れない」と思わせる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-65">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">対面誘導</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">実際の会合・密会へ誘導する</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">「会いたい」「助けが必要」と実際の会合へ誘導する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-66">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">行動規範の強制</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">食事・服装・交友関係など日常行動を細かく管理・統制する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-67">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">報酬と罰の操作</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">従順な行動を褒め逸脱を激しく責めることで行動を制御する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-68">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">集団圧力</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">組織・グループの圧力で個人の意思決定を封じる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-69">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">自己否定の植え付け</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">「あなたは自分では判断できない」と自己効力感を破壊する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-70">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">（このHarmでは省略）</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">行動誘導より直接的な攻撃実行に移行するケースが多い</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-71">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">口座提供の依頼</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">「給与受け取り用」として自分の銀行口座を提供させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-72">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">荷物受け取り依頼</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">「転送業務」として不正品・薬物の受け取りをさせる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-73">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">現金引き出し依頼</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">ATMで現金を引き出し第三者に手渡しさせる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-74">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">契約・申込の代行依頼</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">携帯電話・クレジットカードを名義人として契約させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-75">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">脅迫による継続強制</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">一度関与させた後「今さら抜けられない」と脅し継続させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-76">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">居場所情報の収集</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">日常的な会話から居住地・行動パターンを聞き出す</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-77">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">孤立した場所への誘導</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">人目のない場所・時間帯での会合を設定する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-78">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S5 Behavioral Steering / 行動誘導</span><span class="act-mode-name">監視の正当化</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">「心配だから」と位置情報共有・行動報告を習慣化させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-79">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">認証情報窃取</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">フィッシングサイトでID・パスワード・OTPを詐取</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-80">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">リモート操作</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">RATで銀行アプリを遠隔操作</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-81">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">SIMスワッピング</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">電話番号を乗っ取り認証を突破</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-82">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">パスワードリセット連鎖</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">秘密の質問・メール経由でアカウントを完全掌握</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-83">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">アカウント乗っ取り</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">窃取した認証情報でログインし個人情報を収集</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">被害者のSNSを掌握し画像・人間関係を支配</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">標的のSNSを掌握し偽の発言・投稿を行う</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-84">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">スパイウェア常駐</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">端末に常駐しキー入力・画面・位置情報を継続送信</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-85">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">クッキー・セッション窃取</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">ブラウザのセッショントークンを盗み継続的にアクセス</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-86">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">クレデンシャルスタッフィング</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">漏洩情報を他サービスに自動試行し芋づる式に掌握</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-87">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">性的画像・動画の入手</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">被害者から送付させた性的コンテンツを保持</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-88">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">ディープフェイク生成</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">被害者の顔写真から性的画像・動画を生成</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-89">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">実際の性的接触</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">対面により性的虐待を実行</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-90">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">心理的支配の確立</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">被害者が加害者の指示なしに行動できない状態を作る</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">恐怖・依存により被害者が抵抗できない状態を作る</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-91">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">現実認識の歪曲</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">ガスライティングにより被害者自身の認識・記憶を否定する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-92">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">社会的孤立の完成</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">家族・友人・支援者との関係を完全に断絶させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-93">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">評判インフラの掌握</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">標的に関する検索結果・SNS上の言説を支配する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-94">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">内部情報の入手</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">職場・コミュニティ内の機密・スキャンダルを入手</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-95">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">証拠の確保</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">被害者が犯罪に関与した証拠を記録し逃げられない状況を作る</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-96">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">借金・報酬未払い</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">報酬を支払わず借金を負わせ従属関係を強化する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-97">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">心理的支配</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">「警察に捕まるのはあなただ」と恐怖で支配する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-98">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">位置情報の掌握</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">GPS追跡・ストーキングアプリで継続的に居場所を把握する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-99">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">行動パターンの掌握</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">通勤・通学ルート・日課を完全に把握する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-100">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S6 Compromise / 侵入・掌握</span><span class="act-mode-name">物理的アクセスの確保</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">自宅・職場・よく行く場所への侵入経路を確認する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-101">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">不正送金</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">銀行口座から攻撃者口座へ即時送金</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-102">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">出金拒否・追加請求</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">「税金・手数料が必要」と追加入金を要求</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-103">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">暗号資産奪取</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">ウォレットの秘密鍵を詐取し全額移送</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-104">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">ギフトカード要求</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">追跡困難なギフトカードでの支払いを要求</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-105">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">個人情報売買</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">氏名・住所・金融情報をダークウェブで販売</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-106">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">なりすまし利用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">窃取した情報でローン・クレジットカードを不正申込</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-107">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">標的型攻撃への転用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">収集した情報を使いより精度の高い詐欺を実行</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-108">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">位置情報の悪用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">生活パターン・居場所を継続的に監視・追跡</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-109">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">セクストーション</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">性的画像を人質に金銭・追加コンテンツを要求</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-110">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">CSAM流通</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">性的画像・動画をネットワークで共有・販売</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-111">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">継続的支配</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">画像をネタに長期的な性的・金銭的要求を継続</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-112">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">追加被害者への転用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">被害者の人間関係を利用し新たな標的に接触</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-113">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">継続的精神的虐待</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">恐怖・羞恥・罪悪感を使い長期的な支配を維持する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-114">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">金銭的搾取への転用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">心理的支配を利用して財産・労働を搾取する（H1と連鎖）</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-115">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">性的搾取への転用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">心理的支配を利用して性的要求を強制する（H3と連鎖）</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-116">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">犯罪行為への加担強制</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">支配下に置いた被害者を犯罪の実行役として利用する（H6と連鎖）</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-117">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">偽情報拡散</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">捏造した画像・動画・発言を拡散し評判を毀損する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-118">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">ドックス</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">個人情報（住所・職場・家族）を公開し社会的制裁を煽る</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-119">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">なりすまし投稿</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">標的を装い不適切な発言・行動を演じ評判を落とす</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-120">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">組織的嫌がらせ</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">botや支持者を動員し標的への攻撃を組織化する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-121">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">職場・家族への通報</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">真偽混合の情報を職場・家族に送付し社会的関係を破壊する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-122">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">マネーミュール利用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">被害者口座を経由して不正資金を洗浄する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-123">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">薬物・不正品の運搬</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">被害者を運び屋として利用する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-124">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">詐欺の実行役化</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">被害者を別の詐欺の「顔」として利用する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-125">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">名義貸しの悪用</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">被害者名義の口座・契約を犯罪インフラとして利用する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-126">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">ストーキング</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">継続的な監視・つきまとい・待ち伏せを行う</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-127">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">監禁・拘束</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">被害者の行動の自由を物理的に奪う</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-128">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">身体的暴力</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">暴行・傷害を加える</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-129">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">性的暴行</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">性的な暴力を加える（H3と連鎖）</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-130">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">誘拐</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">被害者を強制的に移送・隔離する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-131">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S7 Exploitation / 搾取</span><span class="act-mode-name">殺傷</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">生命を脅かす暴力を加える</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-132">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">痕跡消去</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">連絡に使ったSNS・メール・アカウントを即時削除</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">偽サイト・偽アプリの削除</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">連絡ツール・アカウントの即時削除</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">連絡ツール・アカウントの削除</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-133">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">送金チェーン化</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">複数口座・暗号資産を経由して資金追跡を困難にする</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-134">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">捨てSIM・端末</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">使い捨て電話番号・端末で痕跡を残さない</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-135">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">次サイクル準備</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#185FA5">H1 金銭・財産</span><ul class="act-list">
+<li class="act-item">今回の被害者リスト・資金・ノウハウをS1リソースに転換</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">収集した情報をS1リソースとして次の犯罪に転用</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">収集したコンテンツ・人間関係情報をS1リソースに転換</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">獲得した人間関係・コミュニティへのアクセスを次の標的選定に転用</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">収集した内部情報・人間関係を次の標的選定に転用</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">調達した口座・名義・インフラを次の犯罪に転用する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-136">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">データ分散保管</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#0F6E56">H2 情報・プライバシー</span><ul class="act-list">
+<li class="act-item">収集した情報を複数サーバーに分散し追跡を困難にする</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-137">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">匿名化</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">VPN・TorでIPアドレスを隠蔽</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">VPN・Tor・匿名アカウントで発信元を隠蔽</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-138">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">被害者への口止め</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993556">H3 性的搾取</span><ul class="act-list">
+<li class="act-item">「公開する」と脅し被害届を抑止する</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">「誰にも言うな」と脅迫・懐柔する</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">脅迫・恐怖により被害届を抑止する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-139">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">責任転嫁</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#534AB7">H4 心理・精神</span><ul class="act-list">
+<li class="act-item">「あなたが望んだことだ」と被害者に罪悪感を植え付け通報を抑止する</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">「事実を言ったまで」と正当化し加害性を隠蔽する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-140">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">拡散の自律化</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#993C1D">H5 社会的信用</span><ul class="act-list">
+<li class="act-item">一度拡散した情報が自律的に広がる状態を作り直接関与を断つ</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-141">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">被害者への責任転嫁</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">「あなたが自分でやったことだ」と法的責任を被害者に押し付ける</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-142">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">証拠隠滅</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">犯罪組織との接点を消し被害者だけが捜査対象になるよう工作する</li>
+</ul></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">連絡履歴・位置情報記録を削除する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-143">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">連絡遮断</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#854F0B">H6 法的巻き込み</span><ul class="act-list">
+<li class="act-item">被害者からの連絡を突然断ち孤立させる</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-144">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">アリバイ工作</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">第三者を利用し犯行時刻の所在を偽装する</li>
+</ul></div>
+</div>
+<div class="act-panel" id="panel-145">
+<div class="act-header"><div class="act-header-text"><span class="act-stage-label">S8 Cover &amp; Exit / 隠蔽・逃走</span><span class="act-mode-name">逃走</span></div><label class="close-btn" for="mode-none">&#215;</label></div>
+<div class="act-harm-block"><span class="act-harm-label" style="background:#A32D2D">H7 身体・生命</span><ul class="act-list">
+<li class="act-item">国内外への逃亡・身元の偽装</li>
+</ul></div>
+</div>
+<div class="footer">LURE Framework ver.01 &nbsp;·&nbsp; Developed by Daiji Hario, Ph.D. &nbsp;·&nbsp; Licensed under CC BY 4.0</div>
+</div>
+</body>
+</html>
