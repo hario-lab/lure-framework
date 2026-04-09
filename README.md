@@ -44,12 +44,19 @@ Inspired by MITRE ATT&CK, LURE maps criminal operations across eight sequential 
 
 ---
 
+## Live Demo
+
+| Language | URL |
+|----------|-----|
+| English | [https://hario-lab.github.io/lure-framework/lure_framework_en_ver01.html](https://hario-lab.github.io/lure-framework/lure_framework_en_ver01.html) |
+| Japanese | [https://hario-lab.github.io/lure-framework/lure_framework_ja_ver01.html](https://hario-lab.github.io/lure-framework/lure_framework_ja_ver01.html) |
+
 ## Files
 
-| File | Description |
-|------|-------------|
-| `lure_framework_en_ver01.html` | Interactive framework — English |
-| `lure_framework_ja_ver01.html` | Interactive framework — Japanese |
+| File | Description | Live |
+|------|-------------|------|
+| `lure_framework_en_ver01.html` | Interactive framework — English | [Open](https://hario-lab.github.io/lure-framework/lure_framework_en_ver01.html) |
+| `lure_framework_ja_ver01.html` | Interactive framework — Japanese | [Open](https://hario-lab.github.io/lure-framework/lure_framework_ja_ver01.html) |
 
 Both files are fully self-contained, JavaScript-free, and mobile-friendly. They can be opened directly in any browser, including iOS Safari and Quick Look.
 
