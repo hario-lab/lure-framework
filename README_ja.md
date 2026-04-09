@@ -2,6 +2,8 @@
 **Lifecycle of User-targeted Risk and Exploitation**
 **消費者サイバー犯罪における被害経路の構造化フレームワーク**
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19478053.svg)](https://doi.org/10.5281/zenodo.19478053)
+
 > 個人を標的とするサイバー犯罪の攻撃経路を体系的に記述するためのキルチェーン型フレームワーク。
 
 ---
@@ -79,10 +81,16 @@ HTMLファイルをブラウザで開いてください。
 
 ```
 Hario, D. (2025). LURE Framework: Lifecycle of User-targeted Risk and Exploitation (ver.01).
-https://github.com/hario-lab/lure-framework
+https://doi.org/10.5281/zenodo.19478053
 ```
 
 ---
+
+## DOI
+
+本フレームワークはZenodoに永続アーカイブされています。
+
+**https://doi.org/10.5281/zenodo.19478053**
 
 ## ライセンス
 

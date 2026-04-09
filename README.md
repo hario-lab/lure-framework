@@ -1,6 +1,8 @@
 # LURE Framework
 **Lifecycle of User-targeted Risk and Exploitation**
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19478053.svg)](https://doi.org/10.5281/zenodo.19478053)
+
 > A structured kill-chain framework for mapping criminal pathways in consumer-facing cybercrime.
 
 ---
@@ -78,10 +80,16 @@ If you use or reference the LURE Framework in research, publications, or present
 
 ```
 Hario, D. (2025). LURE Framework: Lifecycle of User-targeted Risk and Exploitation (ver.01).
-https://github.com/hario-lab/lure-framework
+https://doi.org/10.5281/zenodo.19478053
 ```
 
 ---
+
+## DOI
+
+This release is permanently archived at Zenodo:
+
+**https://doi.org/10.5281/zenodo.19478053**
 
 ## License
 
